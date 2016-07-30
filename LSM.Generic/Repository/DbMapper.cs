@@ -11,7 +11,7 @@ namespace LSM.Generic.Repository
 {
     public class DbMapper
     {
-        public T DataRowToObj<T>(DataRow row)
+        public static T DataRowToObj<T>(DataRow row)
         {
             //Obtains the type of the generic class
             Type t = typeof(T);
@@ -133,7 +133,7 @@ namespace LSM.Generic.Repository
         /// <typeparam name="T">Type/Class para o qual sera mapeado</typeparam>
         /// <param name="dataTable">Fonte dos dados</param>
         /// <returns></returns>
-        public T DataTableToObj<T>(DataTable dataTable)
+        public static T DataTableToObj<T>(DataTable dataTable)
         {
 
             if (dataTable.Rows.Count > 1)
@@ -262,7 +262,7 @@ namespace LSM.Generic.Repository
         /// <typeparam name="T">Type/Class para o qual sera mapeado</typeparam>
         /// <param name="dataTable">Fonte dos dados</param>
         /// <returns></returns>
-        public List<T> DataTableToList<T>(DataTable dataTable)
+        public static List<T> DataTableToList<T>(DataTable dataTable)
         {
             //This create a new list with the same type of the generic class
             List<T> genericList = new List<T>();
