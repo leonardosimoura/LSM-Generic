@@ -34,7 +34,7 @@ namespace LSM.Generic.WepApi.Client
         /// <param name="CaminhoRestService">Dominio onde esta hospedado o WebApi</param>
         /// <param name="AuthenticationPath">Caminho para autenticação</param>
         /// <returns>System.Net.Http.HttpClient</returns>
-        public async Task<System.Net.Http.HttpClient> GetClient(string CaminhoRestService, string AuthenticationPath)
+        public async static Task<System.Net.Http.HttpClient> GetClient(string CaminhoRestService, string AuthenticationPath)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace LSM.Generic.WepApi.Client
                         AcessToken = result.access_token;
                         TokenExpiraEm = DateTime.Now.AddSeconds(result.expires_in);
 
-                        return await this.GetClient(CaminhoRestService, AuthenticationPath);
+                        return await GetClient(CaminhoRestService, AuthenticationPath);
                     }
                     else
                     {
@@ -95,11 +95,11 @@ namespace LSM.Generic.WepApi.Client
         /// <param name="AuthenticationPath">Caminho para autenticação</param>
         /// <param name="Parametro">Objecto que sera enviado como parametro</param>
         /// <returns>Entidade passada</returns>
-        public async Task<Entidade> PostAsync<Entidade>(string CaminhoRestService, string UrlPath, string AuthenticationPath, object Parametro = null)
+        public  async static Task<Entidade> PostAsync<Entidade>(string CaminhoRestService, string UrlPath, string AuthenticationPath, object Parametro = null)
         {
             try
             {
-                using (var client = await new LSM.Generic.WepApi.Client.ApiClient().GetClient(CaminhoRestService, AuthenticationPath))
+                using (var client = await ApiClient.GetClient(CaminhoRestService, AuthenticationPath))
                 {
                     var url = string.Format(CaminhoRestService + UrlPath);
 
