@@ -1,4 +1,4 @@
-﻿using LSM.Generic.Repository.Attribute;
+﻿using LSM.Repository.Attribute;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,12 +7,17 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LSM.Generic.Repository
+namespace LSM.Repository
 {
-    public class DbMapper
+    public class DtMapper
     {
-        public static T DataRowToObj<T>(DataRow row)
+        public static T DataRowToObj<T>(DataRow row) where T : class
         {
+            if (row.Table.Columns.Count == 0)
+            {
+                return null;
+            }
+
             //Obtains the type of the generic class
             Type t = typeof(T);
 
@@ -22,30 +27,23 @@ namespace LSM.Generic.Repository
 
             object defaultInstance = Activator.CreateInstance(t);
 
-
             //Create a new instance of the generic class
             //For each property in the properties of the class
-
-
             var nomecoluna = "";
             var mapear = true;
             foreach (PropertyInfo prop in pi)
             {
                 try
                 {
-
-
                     nomecoluna = "";
                     mapear = true;
-
                     System.Attribute[] attrs = System.Attribute.GetCustomAttributes(prop);//captura todos os custom Atributes
-
                     //percorre os atributos
                     foreach (System.Attribute attr in attrs)
                     {
-                        if (attr is DbMap)
+                        if (attr is DtMap)
                         {
-                            DbMap a = (DbMap)attr;
+                            DtMap a = (DtMap)attr;
                             if (a.Map == true)
                             {
                                 nomecoluna = a.Coluna;
@@ -62,7 +60,6 @@ namespace LSM.Generic.Repository
                     {
                         nomecoluna = prop.Name;
                     }
-
                     //Verifica se a coluna existe na DataTable
                     if (row.Table.Columns.Contains(nomecoluna) && mapear == true)
                     {
@@ -78,15 +75,12 @@ namespace LSM.Generic.Repository
                             //an instance class of the generic class. This instance has been
                             //created with Activator.CreateInstance(t)
                             //prop.SetValue(defaultInstance, columnvalue, null);
-
                             try
                             {
                                 prop.SetValue(defaultInstance, columnvalue, null);
                             }
                             catch (Exception)
                             {
-
-
                                 if (prop.PropertyType == typeof(bool))
                                 {
                                     prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
@@ -111,15 +105,12 @@ namespace LSM.Generic.Repository
                             }
                         }
                     }
-
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(prop.Name + ": " + ex.ToString());
-                    //return null;
                 }
             }
-
             //Now, create a class of the same type of the generic class. 
             //Then a conversion itïs done to set the value
             T myclass = (T)defaultInstance;
@@ -128,37 +119,30 @@ namespace LSM.Generic.Repository
         }
 
         /// <summary>
-        /// Função responsável por mapear um DataTable para um objeto (o Datatable deve conter apenas 1 DataRow)
+        /// Função responsável por mapear um DataTable para um objeto (o DataTable deve conter apenas 1 DataRow)
         /// </summary>
         /// <typeparam name="T">Type/Class para o qual sera mapeado</typeparam>
         /// <param name="dataTable">Fonte dos dados</param>
         /// <returns></returns>
-        public static T DataTableToObj<T>(DataTable dataTable)
+        public static T DataTableToObj<T>(DataTable dataTable) where T : class
         {
-
             if (dataTable.Rows.Count > 1)
             {
                 throw new Exception("DataTable recebida contem mais de 1 registro.");
             }
-
             if (dataTable.Rows.Count == 0)
             {
-                //return null;
+                return null;
             }
-
             //Obtains the type of the generic class
             Type t = typeof(T);
-
             //Obtains the properties definition of the generic class.
             //With this, we are going to know the property names of the class
             PropertyInfo[] pi = t.GetProperties();
-
             object defaultInstance = Activator.CreateInstance(t);
-
             DataRow row = dataTable.Rows[0];
             //Create a new instance of the generic class
             //For each property in the properties of the class
-
             var nomecoluna = "";
             var mapear = true;
             foreach (PropertyInfo prop in pi)
@@ -173,9 +157,9 @@ namespace LSM.Generic.Repository
                     //percorre os atributos
                     foreach (System.Attribute attr in attrs)
                     {
-                        if (attr is DbMap)
+                        if (attr is DtMap)
                         {
-                            DbMap a = (DbMap)attr;
+                            DtMap a = (DtMap)attr;
                             if (a.Map == true)
                             {
                                 nomecoluna = a.Coluna;
@@ -187,12 +171,10 @@ namespace LSM.Generic.Repository
                             }
                         }
                     }
-
                     if (nomecoluna == "")
                     {
                         nomecoluna = prop.Name;
                     }
-
                     //Verifica se a coluna existe na DataTable
                     if (dataTable.Columns.Contains(nomecoluna) && mapear == true)
                     {
@@ -214,8 +196,6 @@ namespace LSM.Generic.Repository
                             }
                             catch (Exception)
                             {
-
-
                                 if (prop.PropertyType == typeof(bool))
                                 {
                                     prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
@@ -236,7 +216,6 @@ namespace LSM.Generic.Repository
                                 {
                                     prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
                                 }
-
                             }
                         }
                     }
@@ -248,10 +227,9 @@ namespace LSM.Generic.Repository
                     //return null;
                 }
             }
-
             //Now, create a class of the same type of the generic class. 
             //Then a conversion itïs done to set the value
-            T myclass = (T)defaultInstance;
+            var myclass = (T)defaultInstance;
             //Add the generic instance to the generic list
             return myclass;
         }
@@ -262,43 +240,40 @@ namespace LSM.Generic.Repository
         /// <typeparam name="T">Type/Class para o qual sera mapeado</typeparam>
         /// <param name="dataTable">Fonte dos dados</param>
         /// <returns></returns>
-        public static List<T> DataTableToList<T>(DataTable dataTable)
+        public static List<T> DataTableToList<T>(DataTable dataTable) where T : class
         {
+            if (dataTable.Rows.Count == 0)
+            {
+                return null;
+            }
             //This create a new list with the same type of the generic class
             List<T> genericList = new List<T>();
             //Obtains the type of the generic class
             Type t = typeof(T);
-
             //Obtains the properties definition of the generic class.
             //With this, we are going to know the property names of the class
             PropertyInfo[] pi = t.GetProperties();
-
             //For each row in the datatable
-
             foreach (DataRow row in dataTable.Rows)
             {
                 //Create a new instance of the generic class
                 object defaultInstance = Activator.CreateInstance(t);
                 //For each property in the properties of the class
-
                 var nomecoluna = "";
                 var mapear = true;
                 foreach (PropertyInfo prop in pi)
                 {
                     try
                     {
-
                         nomecoluna = "";
                         mapear = true;
-
                         System.Attribute[] attrs = System.Attribute.GetCustomAttributes(prop);//captura todos os custom Atributes
-
                         //percorre os atributos
                         foreach (System.Attribute attr in attrs)
                         {
-                            if (attr is DbMap)
+                            if (attr is DtMap)
                             {
-                                DbMap a = (DbMap)attr;
+                                DtMap a = (DtMap)attr;
                                 if (a.Map == true)
                                 {
                                     nomecoluna = a.Coluna;
@@ -310,7 +285,6 @@ namespace LSM.Generic.Repository
                                 }
                             }
                         }
-
                         if (nomecoluna == "")
                         {
                             nomecoluna = prop.Name;
@@ -336,8 +310,6 @@ namespace LSM.Generic.Repository
                                 }
                                 catch (Exception)
                                 {
-
-
                                     if (prop.PropertyType == typeof(bool))
                                     {
                                         prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
@@ -358,12 +330,9 @@ namespace LSM.Generic.Repository
                                     {
                                         prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
                                     }
-
                                 }
                             }
                         }
-
-
                     }
                     catch (Exception ex)
                     {

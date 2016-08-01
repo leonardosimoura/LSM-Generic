@@ -1,26 +1,42 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LSM.Generic.WepApi.Client
+namespace LSM.WebApi
 {
     public class ApiClient
     {
-        private static string AcessToken = "";
-        private static DateTime TokenExpiraEm = DateTime.Now;
-        private static string UserName = "";
-        private static string Password = "";
-
-        public static void SetUserPassword(string UserName, string Password)
+        private string AcessToken = "";
+        private DateTime TokenExpiraEm = DateTime.Now;
+        private string UserName = "";
+        private string Password = "";
+        public ApiClient()
         {
-            ApiClient.UserName = UserName;
-            ApiClient.Password = Password;
+            this.UserName = "";
+            this.Password = "";
+            this.AcessToken = "";
+            this.TokenExpiraEm = DateTime.Now.AddDays(-10);
         }
-
+        public ApiClient(string UserName, string Password)
+        {
+            this.UserName = UserName;
+            this.Password = Password;
+            this.AcessToken = "";
+            this.TokenExpiraEm = DateTime.Now.AddDays(-10);
+        }
+        public void ChangeUserPassword(string UserName, string Password)
+        {
+            if (UserName != this.UserName  || Password != this.Password)
+            {
+                this.UserName = UserName;
+                this.Password = Password;
+                this.AcessToken = "";
+                this.TokenExpiraEm = DateTime.Now.AddDays(-10);
+            }
+        }
         private class TokenInfo
         {
             public string access_token { get; set; }
@@ -34,24 +50,20 @@ namespace LSM.Generic.WepApi.Client
         /// <param name="CaminhoRestService">Dominio onde esta hospedado o WebApi</param>
         /// <param name="AuthenticationPath">Caminho para autenticação</param>
         /// <returns>System.Net.Http.HttpClient</returns>
-        public async static Task<System.Net.Http.HttpClient> GetClient(string CaminhoRestService, string AuthenticationPath)
+        public async Task<System.Net.Http.HttpClient> GetClient(string CaminhoRestService, string AuthenticationPath)
         {
             try
             {
                 var client = new System.Net.Http.HttpClient();
                 client.MaxResponseContentBufferSize = 256000;
 
-                if (AcessToken != "" && DateTime.Now < TokenExpiraEm)
+                if (this.AcessToken != "" && DateTime.Now < this.TokenExpiraEm)
                 {
                     client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AcessToken);
                 }
                 else
                 {
-                    var url = string.Format(CaminhoRestService + AuthenticationPath);
-                    //Remover
-                    UserName = "leonardo@evoluaeducacao.com.br";
-                    Password = "WS";
-
+                    var url = string.Format(CaminhoRestService + AuthenticationPath);                    
                     var content = new FormUrlEncodedContent(new[]
                     {
                         new KeyValuePair<string, string>("grant_type", "password"),
@@ -60,14 +72,11 @@ namespace LSM.Generic.WepApi.Client
                     });
 
                     var resp = await client.PostAsync(url, content);
-
                     if (resp.IsSuccessStatusCode)
                     {
                         var result = JsonConvert.DeserializeObject<TokenInfo>(resp.Content.ReadAsStringAsync().Result);
-
                         AcessToken = result.access_token;
                         TokenExpiraEm = DateTime.Now.AddSeconds(result.expires_in);
-
                         return await GetClient(CaminhoRestService, AuthenticationPath);
                     }
                     else
@@ -75,16 +84,13 @@ namespace LSM.Generic.WepApi.Client
                         throw new Exception(resp.ReasonPhrase);
                     }
                 }
-
                 return client;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
-
 
         /// <summary>
         /// PostAsync passando o Parametro por json ( StringContent ) e retornando Entidade
@@ -95,23 +101,19 @@ namespace LSM.Generic.WepApi.Client
         /// <param name="AuthenticationPath">Caminho para autenticação</param>
         /// <param name="Parametro">Objecto que sera enviado como parametro</param>
         /// <returns>Entidade passada</returns>
-        public  async static Task<Entidade> PostAsync<Entidade>(string CaminhoRestService, string UrlPath, string AuthenticationPath, object Parametro = null)
+        public  async Task<Entidade> PostAsync<Entidade>(string CaminhoRestService, string UrlPath, string AuthenticationPath, object Parametro = null)
         {
             try
             {
-                using (var client = await ApiClient.GetClient(CaminhoRestService, AuthenticationPath))
+                using (var client = await this.GetClient(CaminhoRestService, AuthenticationPath))
                 {
                     var url = string.Format(CaminhoRestService + UrlPath);
-
                     var json = JsonConvert.SerializeObject(Parametro);
                     var content = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json");
-
                     var resp = await client.PostAsync(url, content);
-
                     if (resp.IsSuccessStatusCode)
                     {
                         var result = JsonConvert.DeserializeObject<Entidade>(resp.Content.ReadAsStringAsync().Result);
-
                         return result;
                     }
                     else
