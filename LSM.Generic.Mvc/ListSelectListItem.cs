@@ -8,7 +8,7 @@ using System.Web.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
-namespace LSM.Mvc
+namespace LSM.Generic.Mvc
 {
     [System.AttributeUsage(System.AttributeTargets.Property,AllowMultiple = false)]
     public class LabelForDropDown : System.Attribute

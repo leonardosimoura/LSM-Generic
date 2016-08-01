@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LSM.Mvc")]
+[assembly: AssemblyTitle("LSM.Generic.Repository")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LSM.Mvc")]
+[assembly: AssemblyProduct("LSM.Generic.Repository")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("55698920-3789-4bfe-90d6-b810c68c274d")]
+[assembly: Guid("96da0dca-de22-4dcb-b760-e24ecf71ee7e")]
 
 // Version information for an assembly consists of the following four values:
 //

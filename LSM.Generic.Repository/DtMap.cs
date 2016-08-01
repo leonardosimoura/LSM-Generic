@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LSM.Repository.Attribute
+namespace LSM.Generic.Repository.Attribute
 {
     [System.AttributeUsage(System.AttributeTargets.Property)]
     public class DtMap : System.Attribute

@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{11E97C60-48A7-40C9-B403-498D8B86C0F9}</ProjectGuid>
+    <ProjectGuid>{0F9F9AD3-143E-4C7F-B307-68AAC7D53057}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LSM.WebApi</RootNamespace>
-    <AssemblyName>LSM.WebApi</AssemblyName>
+    <RootNamespace>LSM.Generic.WebApi</RootNamespace>
+    <AssemblyName>LSM.Generic.WebApi</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
