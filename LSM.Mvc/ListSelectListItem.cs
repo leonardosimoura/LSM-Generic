@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace LSM.Mvc
 {
@@ -95,7 +96,14 @@ namespace LSM.Mvc
                     }
                     else
                     {
-                        throw new Exception("Não existe um Key nessa classe!");
+                        if (CultureInfo.CurrentCulture.ToString() == "pt-BR")
+                        {
+                            throw new Exception("Não existe um atributo Key nessa classe!");
+                        }
+                        else
+                        {
+                            throw new Exception("There is no Key attribute on this class!");
+                        }                        
                     }
                 }
                 return null;
