@@ -13,13 +13,13 @@ var client = await ApiClient.GetClientAsync(@"http://localhost/","api/security/t
 
 var dt = new DataTable();
 
-List<MyClass> list  =  DtMapper.DataTableToList<MyClass>(dt);
+List< MyClass > list  =  DtMapper.DataTableToList< MyClass >(dt);
 
-List<MyClass> list  =  DtMapper.DataTableToNullableList<MyClass>(dt);
+List< MyClass > list  =  DtMapper.DataTableToNullableList< MyClass >(dt);
 
-MyClass obj =  DtMapper.DataTableToObj<MyClass>(dt);
+MyClass obj =  DtMapper.DataTableToObj< MyClass >(dt);
 
-MyClass obj = DtMapper.DataRowToObj<MyClass>(dt.Rows[0]);
+MyClass obj = DtMapper.DataRowToObj< MyClass >(dt.Rows[0]);
 
 ## LSM.Generic.Mvc
 
