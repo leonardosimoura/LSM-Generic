@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="DtMap.cs" />
     <Compile Include="DtMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

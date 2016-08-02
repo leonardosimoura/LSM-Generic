@@ -10,6 +10,9 @@ using System.Globalization;
 
 namespace LSM.Generic.Mvc
 {
+    /// <summary>
+    /// For correct execution of LSM.Generic.Mvc.MvcMapper need add this in a property
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property,AllowMultiple = false)]
     public class LabelForDropDown : System.Attribute
     {
@@ -19,13 +22,22 @@ namespace LSM.Generic.Mvc
         }
     }
 
-    public class ListSelectListItem
+    public class MvcMapper
     {
-        public static List<SelectListItem> GetLista<T>(dynamic Lista, object Id = null, string Placeholder = "") where T : class
+
+        /// <summary>
+        /// Get a List<SelectListItem>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="List">List of object</param>
+        /// <param name="SelectedId">Id of the selected item</param>
+        /// <param name="Placeholder">If u want a first option(Placeholder) for the List</param>
+        /// <returns></returns>
+        public static List<SelectListItem> GetListOfSelectListItem<T>(dynamic List, object SelectedId = null, string Placeholder = "") where T : class
         {
             try
             {
-                if (Lista is IEnumerable<T>)
+                if (List is IEnumerable<T> || List is List<T>)
                 {
                     List<SelectListItem> items = new List<SelectListItem>();
                     Type t = typeof(T);
@@ -75,7 +87,7 @@ namespace LSM.Generic.Mvc
                             propLabel = propKey;
                         }
 
-                        foreach (var item in Lista)
+                        foreach (var item in List)
                         {
                             items.Add(new SelectListItem()
                             {
@@ -86,7 +98,7 @@ namespace LSM.Generic.Mvc
 
                         try
                         {
-                            items.Find(p => p.Value == Id.ToString()).Selected = true;
+                            items.Find(p => p.Value == SelectedId.ToString()).Selected = true;
                         }
                         catch (Exception)
                         {

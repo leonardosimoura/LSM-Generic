@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LSM.WebApi
+namespace LSM.Generic.WebApi
 {
     public class ApiClient
     {
@@ -13,6 +13,7 @@ namespace LSM.WebApi
         private DateTime TokenExpiraEm = DateTime.Now;
         private string UserName = "";
         private string Password = "";
+
         public ApiClient()
         {
             this.UserName = "";
@@ -20,6 +21,12 @@ namespace LSM.WebApi
             this.AcessToken = "";
             this.TokenExpiraEm = DateTime.Now.AddDays(-10);
         }
+
+        /// <summary>
+        /// Initialize with UserName and Password
+        /// </summary>
+        /// <param name="UserName">UserName for auth</param>
+        /// <param name="Password">Password for auth</param>
         public ApiClient(string UserName, string Password)
         {
             this.UserName = UserName;
@@ -27,6 +34,12 @@ namespace LSM.WebApi
             this.AcessToken = "";
             this.TokenExpiraEm = DateTime.Now.AddDays(-10);
         }
+
+        /// <summary>
+        /// Change the User and Password, this also reset the token
+        /// </summary>
+        /// <param name="UserName">UserName for auth</param>
+        /// <param name="Password">Password for auth</param>
         public void ChangeUserPassword(string UserName, string Password)
         {
             if (UserName != this.UserName  || Password != this.Password)
@@ -45,12 +58,12 @@ namespace LSM.WebApi
         }
 
         /// <summary>
-        /// Monta o client e já faz a autenticação se necessário
+        /// Create the System.Net.Http.HttpClient already authenticates if necessary
         /// </summary>
-        /// <param name="CaminhoRestService">Dominio onde esta hospedado o WebApi</param>
-        /// <param name="AuthenticationPath">Caminho para autenticação</param>
+        /// <param name="UrlRestService">Url where it hosted the WebAPI</param>
+        /// <param name="AuthenticationPath">Path for authentication</param>
         /// <returns>System.Net.Http.HttpClient</returns>
-        public async Task<System.Net.Http.HttpClient> GetClient(string CaminhoRestService, string AuthenticationPath)
+        public async Task<System.Net.Http.HttpClient> GetClientAsync(string UrlRestService, string AuthenticationPath)
         {
             try
             {
@@ -63,7 +76,7 @@ namespace LSM.WebApi
                 }
                 else
                 {
-                    var url = string.Format(CaminhoRestService + AuthenticationPath);                    
+                    var url = string.Format(UrlRestService + AuthenticationPath);                    
                     var content = new FormUrlEncodedContent(new[]
                     {
                         new KeyValuePair<string, string>("grant_type", "password"),
@@ -77,7 +90,7 @@ namespace LSM.WebApi
                         var result = JsonConvert.DeserializeObject<TokenInfo>(resp.Content.ReadAsStringAsync().Result);
                         AcessToken = result.access_token;
                         TokenExpiraEm = DateTime.Now.AddSeconds(result.expires_in);
-                        return await GetClient(CaminhoRestService, AuthenticationPath);
+                        return await GetClientAsync(UrlRestService, AuthenticationPath);
                     }
                     else
                     {
@@ -93,27 +106,27 @@ namespace LSM.WebApi
         }
 
         /// <summary>
-        /// PostAsync passando o Parametro por json ( StringContent ) e retornando Entidade
+        /// PostAsync passing parameter by json ( StringContent ) and returns the TEntity
         /// </summary>
-        /// <typeparam name="Entidade">Type a ser retornando pela chamada</typeparam>
-        /// <param name="CaminhoRestService">Dominio onde esta hospedado o WebApi</param>
-        /// <param name="UrlPath">Caminho do método</param>
-        /// <param name="AuthenticationPath">Caminho para autenticação</param>
-        /// <param name="Parametro">Objecto que sera enviado como parametro</param>
-        /// <returns>Entidade passada</returns>
-        public  async Task<Entidade> PostAsync<Entidade>(string CaminhoRestService, string UrlPath, string AuthenticationPath, object Parametro = null)
+        /// <typeparam name="TEntity">Type of return</typeparam>
+        /// <param name="UrlRestService">Url where it hosted the WebAPI</param>
+        /// <param name="UrlPath">Path for method</param>
+        /// <param name="AuthenticationPath">Path for authentication</param>
+        /// <param name="Parameter">Objecto que sera enviado como parametro</param>
+        /// <returns>TEntity</returns>
+        public async Task<TEntity> PostAsync<TEntity>(string UrlRestService, string UrlPath, string AuthenticationPath, object Parameter = null)
         {
             try
             {
-                using (var client = await this.GetClient(CaminhoRestService, AuthenticationPath))
+                using (var client = await this.GetClientAsync(UrlRestService, AuthenticationPath))
                 {
-                    var url = string.Format(CaminhoRestService + UrlPath);
-                    var json = JsonConvert.SerializeObject(Parametro);
+                    var url = string.Format(UrlRestService + UrlPath);
+                    var json = JsonConvert.SerializeObject(Parameter);
                     var content = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json");
                     var resp = await client.PostAsync(url, content);
                     if (resp.IsSuccessStatusCode)
                     {
-                        var result = JsonConvert.DeserializeObject<Entidade>(resp.Content.ReadAsStringAsync().Result);
+                        var result = JsonConvert.DeserializeObject<TEntity>(resp.Content.ReadAsStringAsync().Result);
                         return result;
                     }
                     else

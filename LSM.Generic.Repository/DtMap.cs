@@ -11,28 +11,31 @@ namespace LSM.Generic.Repository.Attribute
     {
         public string Coluna { get; set; }
         public bool Map { get; set; }
+
         /// <summary>
-        /// Utilize para mapear automaticamente a propriedade apartir do nome da coluna de um datatable / datarow
+        /// Use to automatically map the property from the name of the column of a datatable / datarow
         /// </summary>
-        /// <param name="Map">Mapear?</param>
+        /// <param name="Map">Map?</param>
         public DtMap(bool Map)
         {
             this.Map = Map;
         }
+
         /// <summary>
-        /// Utilize para mapear automaticamente a propriedade apartir do nome da coluna de um datatable / datarow
+        /// Use to automatically map the property from the name of the column of a datatable / datarow
         /// </summary>
-        /// <param name="Nome">Nome da Coluna</param>
+        /// <param name="Nome">Name of column</param>
         public DtMap(string Coluna)
         {
             this.Coluna = Coluna;
             this.Map = true;
         }
+
         /// <summary>
-        /// Utilize para mapear automaticamente a propriedade apartir do nome da coluna de um datatable / datarow
+        /// Use to automatically map the property from the name of the column of a datatable / datarow
         /// </summary>
-        /// <param name="Nome">Nome da Coluna</param>
-        /// <param name="Map">Mapear?</param>
+        /// <param name="Nome">Name of column</param>
+        /// <param name="Map">Map?</param>
         public DtMap(string Coluna, bool Map)
         {
             this.Coluna = Coluna;
@@ -40,6 +43,6 @@ namespace LSM.Generic.Repository.Attribute
         }
     }
     // Uso   
-    //    [DtMap("IdTrilhaTemplate")]
-    //    public Int64 IdTrilhaTemplate_TESTE { get; set; }
+    //    [DtMap("IdEntidade")]
+    //    public int Id { get; set; }
 }

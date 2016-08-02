@@ -9,11 +9,21 @@ using System.Threading.Tasks;
 
 namespace LSM.Generic.Repository
 {
+
+    /// <summary>
+    /// Responsible for Map DataTable or DataRow to objects
+    /// </summary>
     public class DtMapper
     {
-        public static T DataRowToObj<T>(DataRow row) where T : class
+        /// <summary>
+        /// Mapping a DataRow to an object
+        /// </summary>
+        /// <typeparam name="T">Type/Class of return</typeparam>
+        /// <param name="Row">DataRow to be mapped</param>
+        /// <returns></returns>
+        public static T DataRowToObj<T>(DataRow Row) where T : class
         {
-            if (row.Table.Columns.Count == 0)
+            if (Row.Table.Columns.Count == 0)
             {
                 return null;
             }
@@ -61,12 +71,12 @@ namespace LSM.Generic.Repository
                         nomecoluna = prop.Name;
                     }
                     //Verifica se a coluna existe na DataTable
-                    if (row.Table.Columns.Contains(nomecoluna) && mapear == true)
+                    if (Row.Table.Columns.Contains(nomecoluna) && mapear == true)
                     {
                         //Get the value of the row according to the field name
                         //Remember that the classïs members and the tableïs field names
                         //must be identical
-                        object columnvalue = row[nomecoluna];
+                        object columnvalue = Row[nomecoluna];
                         //Know check if the value is null. 
                         //If not, it will be added to the instance
                         if (columnvalue != DBNull.Value)
@@ -119,18 +129,18 @@ namespace LSM.Generic.Repository
         }
 
         /// <summary>
-        /// Função responsável por mapear um DataTable para um objeto (o DataTable deve conter apenas 1 DataRow)
+        /// Mapping a DataTable to an object (DataTable must contain only 1 DataRow)
         /// </summary>
-        /// <typeparam name="T">Type/Class para o qual sera mapeado</typeparam>
-        /// <param name="dataTable">Fonte dos dados</param>
+        /// <typeparam name="T">Type/Class of return</typeparam>
+        /// <param name="DataTable">DataTable to be mapped</param>
         /// <returns></returns>
-        public static T DataTableToObj<T>(DataTable dataTable) where T : class
+        public static T DataTableToObj<T>(DataTable DataTable) where T : class
         {
-            if (dataTable.Rows.Count > 1)
+            if (DataTable.Rows.Count > 1)
             {
                 throw new Exception("DataTable recebida contem mais de 1 registro.");
             }
-            if (dataTable.Rows.Count == 0)
+            if (DataTable.Rows.Count == 0)
             {
                 return null;
             }
@@ -140,7 +150,7 @@ namespace LSM.Generic.Repository
             //With this, we are going to know the property names of the class
             PropertyInfo[] pi = t.GetProperties();
             object defaultInstance = Activator.CreateInstance(t);
-            DataRow row = dataTable.Rows[0];
+            DataRow row = DataTable.Rows[0];
             //Create a new instance of the generic class
             //For each property in the properties of the class
             var nomecoluna = "";
@@ -176,7 +186,7 @@ namespace LSM.Generic.Repository
                         nomecoluna = prop.Name;
                     }
                     //Verifica se a coluna existe na DataTable
-                    if (dataTable.Columns.Contains(nomecoluna) && mapear == true)
+                    if (DataTable.Columns.Contains(nomecoluna) && mapear == true)
                     {
                         //Get the value of the row according to the field name
                         //Remember that the classïs members and the tableïs field names
@@ -235,19 +245,41 @@ namespace LSM.Generic.Repository
         }
 
         /// <summary>
-        /// Função responsável por mapear um DataTable para uma Lista de objetos
+        /// Mapping a DataTable to an object List, returning an empty List when the DataTable not contain Rows
         /// </summary>
-        /// <typeparam name="T">Type/Class para o qual sera mapeado</typeparam>
-        /// <param name="dataTable">Fonte dos dados</param>
+        /// <typeparam name="T">Type/Class of return</typeparam>
+        /// <param name="DataTable">DataTable to be mapped</param>
         /// <returns></returns>
-        public static List<T> DataTableToList<T>(DataTable dataTable) where T : class
+        public static List<T> DataTableToList<T>(DataTable DataTable) where T : class
         {
-            if (dataTable.Rows.Count == 0)
+            return PrivateDataTableToList<T>(DataTable, false);
+        }
+
+        /// <summary>
+        /// Mapping a DataTable for a list of objects, returning null when the DataTable not contain Rows
+        /// </summary>
+        /// <typeparam name="T">Type/Class of return</typeparam>
+        /// <param name="DataTable">DataTable to be mapped</param>
+        /// <returns></returns>
+        public static List<T> DataTableToNullableList<T>(DataTable DataTable) where T : class
+        {
+            return PrivateDataTableToList<T>(DataTable, true);
+        }
+
+  
+        private static List<T> PrivateDataTableToList<T>(DataTable dataTable, bool Nullable = false) where T : class
+        {
+            if (dataTable.Rows.Count == 0 && Nullable == true)
             {
                 return null;
             }
             //This create a new list with the same type of the generic class
             List<T> genericList = new List<T>();
+
+            if (dataTable.Rows.Count == 0 && Nullable == false)
+            {
+                return genericList;
+            }
             //Obtains the type of the generic class
             Type t = typeof(T);
             //Obtains the properties definition of the generic class.
