@@ -5,7 +5,7 @@
 
 var ApiClient = new ApiClient("User" ,"Password");
 
-var myclass = await ApiClient.PostAsync<Myclass>(@"http://localhost/", "api/path", "api/security/token");
+var myclass = await ApiClient.PostAsync< Myclass >(@"http://localhost/", "api/path", "api/security/token");
 
 ## Generic.Repository - Usage
 
