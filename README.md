@@ -7,21 +7,38 @@ var ApiClient = new ApiClient("User" ,"Password");
 
 var myclass = await ApiClient.PostAsync< Myclass >(@"http://localhost/", "api/path", "api/security/token");
 
+<<<<<<< HEAD
+=======
+var client = await ApiClient.GetClientAsync(@"http://localhost/","api/security/token");
+
+>>>>>>> origin/master
 ## Generic.Repository - Usage
 
 var dt = new DataTable();
 
 List<MyClass> list  =  DtMapper.DataTableToList<MyClass>(dt);
 
+<<<<<<< HEAD
+=======
+List<MyClass> list  =  DtMapper.DataTableToNullableList<MyClass>(dt);
+
+>>>>>>> origin/master
 MyClass obj =  DtMapper.DataTableToObj<MyClass>(dt);
 
 MyClass obj = DtMapper.DataRowToObj<MyClass>(dt.Rows[0]);
 
+<<<<<<< HEAD
 
 ## LSM.Generic.Mvc
 
 
 ### ListSelectListItem.GetLista
+=======
+## LSM.Generic.Mvc
+
+
+### MvcMapper.GetListOfSelectListItem
+>>>>>>> origin/master
 
 public class Todo
 {
@@ -51,4 +68,8 @@ list.Add(new Todo() { Id = 4, Name = "Todo 4", Code = "T4" });
 
 list.Add(new Todo() { Id = 5, Name = "Todo 5", Code = "T5" });
 
+<<<<<<< HEAD
 var listDropDown = LSM.Generic.Mvc.ListSelectListItem.GetLista<Todo>(list);
+=======
+var listDropDown = LSM.Generic.Mvc.MvcMapper.GetListOfSelectListItem<Todo>(list);
+>>>>>>> origin/master
