@@ -15,6 +15,118 @@ namespace LSM.Generic.Repository
     /// </summary>
     public class DtMapper
     {
+
+
+        /// <summary>
+        /// Mapping a DataRow to an object
+        /// </summary>
+        /// <param name="Row">DataRow to be mapped</param>
+        /// /// <param name="T">Class Type</param>
+        /// <returns></returns>
+        public static dynamic DataRowToDynamic(DataRow Row, Type T)
+        {
+            if (Row.Table.Columns.Count == 0)
+            {
+                return null;
+            }
+
+            //Obtains the properties definition of the generic class.
+            //With this, we are going to know the property names of the class
+            PropertyInfo[] pi = T.GetProperties();
+
+            object defaultInstance = Activator.CreateInstance(T);
+
+            //Create a new instance of the generic class
+            //For each property in the properties of the class
+            var nomecoluna = "";
+            var mapear = true;
+            foreach (PropertyInfo prop in pi)
+            {
+                try
+                {
+                    nomecoluna = "";
+                    mapear = true;
+                    System.Attribute[] attrs = System.Attribute.GetCustomAttributes(prop);//captura todos os custom Atributes
+                    //percorre os atributos
+                    foreach (System.Attribute attr in attrs)
+                    {
+                        if (attr is DtMap)
+                        {
+                            DtMap a = (DtMap)attr;
+                            if (a.Map == true)
+                            {
+                                nomecoluna = a.Coluna;
+                            }
+                            else
+                            {
+                                nomecoluna = "";
+                                mapear = false;
+                            }
+                        }
+                    }
+
+                    if (nomecoluna == "")
+                    {
+                        nomecoluna = prop.Name;
+                    }
+                    //Verifica se a coluna existe na DataTable
+                    if (Row.Table.Columns.Contains(nomecoluna) && mapear == true)
+                    {
+                        //Get the value of the row according to the field name
+                        //Remember that the classïs members and the tableïs field names
+                        //must be identical
+                        object columnvalue = Row[nomecoluna];
+                        //Know check if the value is null. 
+                        //If not, it will be added to the instance
+                        if (columnvalue != DBNull.Value)
+                        {
+                            //Set the value dinamically. Now you need to pass as an argument
+                            //an instance class of the generic class. This instance has been
+                            //created with Activator.CreateInstance(t)
+                            //prop.SetValue(defaultInstance, columnvalue, null);
+                            try
+                            {
+                                prop.SetValue(defaultInstance, columnvalue, null);
+                            }
+                            catch (Exception)
+                            {
+                                if (prop.PropertyType == typeof(bool))
+                                {
+                                    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
+                                }
+                                else if (prop.PropertyType == typeof(int))
+                                {
+                                    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
+                                }
+                                else if (prop.PropertyType == typeof(double))
+                                {
+                                    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
+                                }
+                                else if (prop.PropertyType == typeof(decimal))
+                                {
+                                    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
+                                }
+                                else if (prop.PropertyType == typeof(float))
+                                {
+                                    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
+                                }
+
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(prop.Name + ": " + ex.ToString());
+                }
+            }
+            //Now, create a class of the same type of the generic class. 
+            //Then a conversion itïs done to set the value
+            var myclass = defaultInstance;
+            //Add the generic instance to the generic list
+            return myclass;
+        }
+
         /// <summary>
         /// Mapping a DataRow to an object
         /// </summary>
