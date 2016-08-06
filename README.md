@@ -40,7 +40,6 @@ Pessoa obj = DtMapper.DataRowToObj<Pessoa>(dt.Rows[0]);
 
 ## Generic.Repository.SqlServer
 
-### Class
 ```C#
         [LSM.Generic.Repository.DataAnnotation.Procedure("GetPessoaById", "GetAllPessoa", "AddPessoa", "UpdatePessoa", "RemovePessoa")]
         public class Pessoa
@@ -94,7 +93,6 @@ Pessoa obj = DtMapper.DataRowToObj<Pessoa>(dt.Rows[0]);
             }
         }
 ```
-###
 
 ## LSM.Generic.Mvc
 
