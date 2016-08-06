@@ -4,9 +4,10 @@
 ## Generic.WebApi - Usage
 
 ```C#
+
 var ApiClient = new ApiClient("User" ,"Password");
 
-var myclass = await ApiClient.PostAsync< Myclass >(@"http://localhost/", "api/path", "api/security/token");
+var myclass = await ApiClient.PostAsync<Myclass>(@"http://localhost/", "api/path", "api/security/token");
 
 var client = await ApiClient.GetClientAsync(@"http://localhost/","api/security/token");
 
@@ -14,28 +15,40 @@ var client = await ApiClient.GetClientAsync(@"http://localhost/","api/security/t
 ## Generic.Repository - Usage
 
 ```C#
+
+public class Pessoa
+{
+    [LSM.Generic.Repository.Attribute.DtMap("IdPessoa")] //Use this if the column name is different with the property , also in Generic.Repository.SqlServer will use this to generate procedure parameter name
+    public int Id { get; set; }
+    public string Nome { get; set; }
+    public string SobreNome { get; set; }
+    public DateTime DataNascimento { get; set; }
+    public bool Ativo { get; set; }
+}
+
 var dt = new DataTable();
 
-List< MyClass > list  =  DtMapper.DataTableToList< MyClass >(dt);
+List<Pessoa> list  =  DtMapper.DataTableToList<Pessoa>(dt);
 
-List< MyClass > list  =  DtMapper.DataTableToNullableList< MyClass >(dt);
+List<Pessoa> list  =  DtMapper.DataTableToNullableList<Pessoa>(dt);
 
-MyClass obj =  DtMapper.DataTableToObj< MyClass >(dt);
+Pessoa obj =  DtMapper.DataTableToObj<Pessoa>(dt);
 
-MyClass obj = DtMapper.DataRowToObj< MyClass >(dt.Rows[0]);
+Pessoa obj = DtMapper.DataRowToObj<Pessoa>(dt.Rows[0]);
+
 ```
 
 ## Generic.Repository.SqlServer
 
 ### Class
 ```C#
-[LSM.Generic.Repository.DataAnnotation.Procedure("GetPessoaById", "GetAllPessoa", "AddPessoa", "UpdatePessoa", "RemovePessoa")]
+        [LSM.Generic.Repository.DataAnnotation.Procedure("GetPessoaById", "GetAllPessoa", "AddPessoa", "UpdatePessoa", "RemovePessoa")]
         public class Pessoa
         {
             [LSM.Generic.Repository.DataAnnotation.ProcedureGetByIdParameter]
             [LSM.Generic.Repository.DataAnnotation.ProcedureUpdateParameter]
             [LSM.Generic.Repository.DataAnnotation.ProcedureRemoveParameter]
-            [LSM.Generic.Repository.Attribute.DtMap("IdPessoa")] //Use this if the column name is diferente with the property , also in Generic.Repository.SqlServer it will use this to generate procedure parameter name
+            [LSM.Generic.Repository.Attribute.DtMap("IdPessoa")] //Use this if the column name is different with the property , also in Generic.Repository.SqlServer will use this to generate procedure parameter name
             public int Id { get; set; }
             [LSM.Generic.Repository.DataAnnotation.ProcedureAddParameter]
             [LSM.Generic.Repository.DataAnnotation.ProcedureUpdateParameter]
@@ -48,7 +61,6 @@ MyClass obj = DtMapper.DataRowToObj< MyClass >(dt.Rows[0]);
             public DateTime DataNascimento { get; set; }
             public bool Ativo { get; set; }
         }
-        
         
         string Conexao = "Connection String";
 
