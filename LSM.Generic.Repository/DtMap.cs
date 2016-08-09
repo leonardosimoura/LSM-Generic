@@ -9,37 +9,37 @@ namespace LSM.Generic.Repository.Attribute
     [System.AttributeUsage(System.AttributeTargets.Property)]
     public class DtMap : System.Attribute
     {
-        public string Coluna { get; set; }
+        public string Column { get; set; }
         public bool Map { get; set; }
 
         /// <summary>
         /// Use to automatically map the property from the name of the column of a datatable / datarow
         /// </summary>
-        /// <param name="Map">Map?</param>
-        public DtMap(bool Map)
+        /// <param name="map">Map?</param>
+        public DtMap(bool map)
         {
-            this.Map = Map;
+            this.Map = map;
         }
 
         /// <summary>
         /// Use to automatically map the property from the name of the column of a datatable / datarow
         /// </summary>
-        /// <param name="Nome">Name of column</param>
-        public DtMap(string Coluna)
+        /// <param name="column">Name of column</param>
+        public DtMap(string column)
         {
-            this.Coluna = Coluna;
+            this.Column = column;
             this.Map = true;
         }
 
         /// <summary>
         /// Use to automatically map the property from the name of the column of a datatable / datarow
         /// </summary>
-        /// <param name="Nome">Name of column</param>
-        /// <param name="Map">Map?</param>
-        public DtMap(string Coluna, bool Map)
+        /// <param name="column">Name of column</param>
+        /// <param name="map">Map?</param>
+        public DtMap(string column, bool map)
         {
-            this.Coluna = Coluna;
-            this.Map = Map;
+            this.Column = column;
+            this.Map = map;
         }
     }
     // Uso   

@@ -12,11 +12,118 @@ namespace LSM.Generic.Repository.SqlServer
 {
     public class DbContext<T> : IDisposable where T : class
     {
-        private string Connection = "";
+        public string Connection { get; private set; }
+        public bool UseTransaction { get; private set; }
+        private SqlTransaction Transaction;
+        private SqlConnection Conn;
 
-        public DbContext(string Conn)
+        public DbContext(string conn)
         {
-            this.Connection = Conn;
+            this.Connection = conn;
+            this.UseTransaction = false;
+        }
+        public DbContext(string conn, bool useTransaction)
+        {
+            this.Connection = conn;
+            this.UseTransaction = useTransaction;
+        }
+
+        private void Commit()
+        {
+            if (UseTransaction)
+            {
+                if (Transaction != null)
+                {
+                    Transaction.Commit();
+                    Transaction = null;
+                }
+            }
+
+            if (Conn != null)
+            {
+                if (Conn.State == ConnectionState.Open)
+                {
+                    Conn.Close();
+
+                }
+                Conn = null;
+            }
+            
+        }
+
+        private void Rollback()
+        {
+            if (UseTransaction)
+            {
+                if (Transaction != null)
+                {
+                    Transaction.Rollback();
+                    Transaction = null;
+                }
+            }
+
+            if (Conn != null)
+            {
+                if (Conn.State == ConnectionState.Open)
+                {
+                    Conn.Close();
+
+                }
+                Conn = null;
+            }
+        }
+
+        private SqlConnection GetConnection()
+        {
+            if (Conn == null)
+            {
+                var conn = new SqlConnection(Connection);
+
+                conn.Open();
+
+                if (UseTransaction)
+                {
+                    InitiateTransaction(conn);
+                }
+
+                Conn = conn;
+            }
+            return Conn;
+        }
+
+        private async Task<SqlConnection> GetConnectionAsync()
+        {
+            if (Conn == null)
+            {
+                var conn = new SqlConnection(Connection);
+
+                await conn.OpenAsync();
+
+                if (UseTransaction)
+                {
+                    InitiateTransaction(conn);
+                }
+                Conn = conn;
+            }
+            return Conn;
+        }
+
+        private void InitiateTransaction(SqlConnection conn)
+        {
+            if (UseTransaction)
+            {
+                if (Transaction == null)
+                {
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        Transaction = conn.BeginTransaction();
+                    }
+                    else
+                    {
+                        throw new Exception("Connections is not open.");
+                    }
+                }
+            }
         }
 
         public IEnumerable<T> GetAll(T obj = null)
@@ -44,7 +151,7 @@ namespace LSM.Generic.Repository.SqlServer
                             var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
                             if (DtMap != null)
                             {
-                                cmd.Parameters.AddWithValue(DtMap.Coluna, propert.GetValue(obj));
+                                cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
                             }
                             else
                             {
@@ -54,47 +161,48 @@ namespace LSM.Generic.Repository.SqlServer
                     }
                 }
 
-                using (var conn = new SqlConnection(Connection))
+                var conn = GetConnection();
+
+                using (cmd)
                 {
-                    conn.Open();
-                    using (cmd)
+                    cmd.Connection = conn;
+                    cmd.Transaction = Transaction;
+                    var dt = new DataTable();
+                    dt.Load(cmd.ExecuteReader());
+
+                    var lista = new List<T>();
+
+                    for (int i = 0; i < dt.Rows.Count; i++)
                     {
-                        cmd.Connection = conn;
-                        var dt = new DataTable();
-                        dt.Load(cmd.ExecuteReader());
+                        var objAdd = DtMapper.DataRowToObj<T>(dt.Rows[i]);
+                        var Properts = Type.GetProperties();
 
-                        var lista = new List<T>();
-
-                        for (int i = 0; i < dt.Rows.Count; i++)
+                        foreach (var property in Properts)
                         {
-                            var objAdd = DtMapper.DataRowToObj<T>(dt.Rows[i]);
-                            var Properts = Type.GetProperties();
 
-                            foreach (var property in Properts)
+                            if (property.PropertyType.IsClass
+                                && !property.PropertyType.FullName.StartsWith("System.")
+                                && property.PropertyType != Type
+                                )
                             {
-                                
-                                if (property.PropertyType.IsClass
-                                    && !property.PropertyType.FullName.StartsWith("System.")
-                                    && property.PropertyType != Type
-                                    )
-                                {
-                                    object propertValue = Activator.CreateInstance(property.PropertyType);
+                                object propertValue = Activator.CreateInstance(property.PropertyType);
 
-                                    propertValue = DtMapper.DataRowToDynamic(dt.Rows[i], propertValue.GetType());
+                                propertValue = DtMapper.DataRowToDynamic(dt.Rows[i], propertValue.GetType());
 
-                                    property.SetValue(objAdd, propertValue);
-                                }
+                                property.SetValue(objAdd, propertValue);
                             }
-
-                            lista.Add(objAdd);
                         }
-                        return lista;
-                        //return DtMapper.DataTableToList<T>(dt);
+
+                        lista.Add(objAdd);
                     }
+                    return lista;
+                    //return DtMapper.DataTableToList<T>(dt);
                 }
+
             }
             catch (Exception ex)
             {
+                Rollback();
                 throw ex;
             }
         }
@@ -124,7 +232,7 @@ namespace LSM.Generic.Repository.SqlServer
                             var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
                             if (DtMap != null)
                             {
-                                cmd.Parameters.AddWithValue(DtMap.Coluna, propert.GetValue(obj));
+                                cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
                             }
                             else
                             {
@@ -134,47 +242,50 @@ namespace LSM.Generic.Repository.SqlServer
                     }
                 }
 
-                using (var conn = new SqlConnection(Connection))
+                var conn = await GetConnectionAsync();
+
+
+
+                using (cmd)
                 {
-                    await conn.OpenAsync();
-                    using (cmd)
+                    cmd.Connection = conn;
+                    cmd.Transaction = Transaction;
+                    var dt = new DataTable();
+                    dt.Load(await cmd.ExecuteReaderAsync());
+
+                    var lista = new List<T>();
+
+                    for (int i = 0; i < dt.Rows.Count; i++)
                     {
-                        cmd.Connection = conn;
-                        var dt = new DataTable();
-                        dt.Load(await cmd.ExecuteReaderAsync());
+                        var objAdd = DtMapper.DataRowToObj<T>(dt.Rows[i]);
+                        var Properts = Type.GetProperties();
 
-                        var lista = new List<T>();
-
-                        for (int i = 0; i < dt.Rows.Count; i++)
+                        foreach (var property in Properts)
                         {
-                            var objAdd = DtMapper.DataRowToObj<T>(dt.Rows[i]);
-                            var Properts = Type.GetProperties();
 
-                            foreach (var property in Properts)
+                            if (property.PropertyType.IsClass
+                                && !property.PropertyType.FullName.StartsWith("System.")
+                                && property.PropertyType != Type
+                                )
                             {
+                                object propertValue = Activator.CreateInstance(property.PropertyType);
 
-                                if (property.PropertyType.IsClass
-                                    && !property.PropertyType.FullName.StartsWith("System.")
-                                    && property.PropertyType != Type
-                                    )
-                                {
-                                    object propertValue = Activator.CreateInstance(property.PropertyType);
+                                propertValue = DtMapper.DataRowToDynamic(dt.Rows[i], propertValue.GetType());
 
-                                    propertValue = DtMapper.DataRowToDynamic(dt.Rows[i], propertValue.GetType());
-
-                                    property.SetValue(objAdd, propertValue);
-                                }
+                                property.SetValue(objAdd, propertValue);
                             }
-
-                            lista.Add(objAdd);
                         }
-                        return lista;
-                        //return DtMapper.DataTableToList<T>(dt);
+
+                        lista.Add(objAdd);
                     }
+                    return lista;
+                    //return DtMapper.DataTableToList<T>(dt);
                 }
+
             }
             catch (Exception ex)
             {
+                Rollback();
                 throw ex;
             }
         }
@@ -183,6 +294,7 @@ namespace LSM.Generic.Repository.SqlServer
         {
             try
             {
+                
                 var Type = typeof(T);
                 ProcedureAttribute ProcAttribute = null;
 
@@ -202,7 +314,7 @@ namespace LSM.Generic.Repository.SqlServer
                         var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
                         if (DtMap != null)
                         {
-                            cmd.Parameters.AddWithValue(DtMap.Coluna, propert.GetValue(obj));
+                            cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
                         }
                         else
                         {
@@ -211,20 +323,22 @@ namespace LSM.Generic.Repository.SqlServer
                     }
                 }
 
-                using (var conn = new SqlConnection(Connection))
+                var conn = GetConnection();
+
+
+                using (cmd)
                 {
-                    conn.Open();
-                    using (cmd)
-                    {
-                        cmd.Connection = conn;
-                        var dt = new DataTable();
-                        dt.Load(cmd.ExecuteReader());
-                        return DtMapper.DataTableToObj<T>(dt);
-                    }
+                    cmd.Connection = conn;
+                    cmd.Transaction = Transaction;
+                    var dt = new DataTable();
+                    dt.Load(cmd.ExecuteReader());
+                    return DtMapper.DataTableToObj<T>(dt);
                 }
+
             }
             catch (Exception ex)
             {
+                Rollback();
                 throw ex;
             }
         }
@@ -233,6 +347,7 @@ namespace LSM.Generic.Repository.SqlServer
         {
             try
             {
+                
                 var Type = typeof(T);
                 ProcedureAttribute ProcAttribute = null;
 
@@ -252,7 +367,7 @@ namespace LSM.Generic.Repository.SqlServer
                         var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
                         if (DtMap != null)
                         {
-                            cmd.Parameters.AddWithValue(DtMap.Coluna, propert.GetValue(obj));
+                            cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
                         }
                         else
                         {
@@ -261,20 +376,21 @@ namespace LSM.Generic.Repository.SqlServer
                     }
                 }
 
-                using (var conn = new SqlConnection(Connection))
+                var conn = await GetConnectionAsync();
+
+                using (cmd)
                 {
-                    await conn.OpenAsync();
-                    using (cmd)
-                    {
-                        cmd.Connection = conn;
-                        var dt = new DataTable();
-                        dt.Load(await cmd.ExecuteReaderAsync());
-                        return DtMapper.DataTableToObj<T>(dt);
-                    }
+                    cmd.Connection = conn;
+                    cmd.Transaction = Transaction;
+                    var dt = new DataTable();
+                    dt.Load(await cmd.ExecuteReaderAsync());
+                    return DtMapper.DataTableToObj<T>(dt);
                 }
+
             }
             catch (Exception ex)
             {
+                Rollback();
                 throw ex;
             }
         }
@@ -283,6 +399,8 @@ namespace LSM.Generic.Repository.SqlServer
         {
             try
             {
+                
+
                 var Type = typeof(T);
                 ProcedureAttribute ProcAttribute = null;
 
@@ -302,7 +420,7 @@ namespace LSM.Generic.Repository.SqlServer
                         var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
                         if (DtMap != null)
                         {
-                            cmd.Parameters.AddWithValue(DtMap.Coluna, propert.GetValue(obj));
+                            cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
                         }
                         else
                         {
@@ -311,18 +429,19 @@ namespace LSM.Generic.Repository.SqlServer
                     }
                 }
 
-                using (var conn = new SqlConnection(Connection))
+                var conn = GetConnection();
                 {
-                    conn.Open();
                     using (cmd)
                     {
                         cmd.Connection = conn;
+                        cmd.Transaction = Transaction;
                         cmd.ExecuteNonQuery();
                     }
                 }
             }
             catch (Exception ex)
             {
+                Rollback();
                 throw ex;
             }
         }
@@ -331,6 +450,7 @@ namespace LSM.Generic.Repository.SqlServer
         {
             try
             {
+               
                 var Type = typeof(T);
                 ProcedureAttribute ProcAttribute = null;
 
@@ -350,7 +470,7 @@ namespace LSM.Generic.Repository.SqlServer
                         var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
                         if (DtMap != null)
                         {
-                            cmd.Parameters.AddWithValue(DtMap.Coluna, propert.GetValue(obj));
+                            cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
                         }
                         else
                         {
@@ -359,18 +479,20 @@ namespace LSM.Generic.Repository.SqlServer
                     }
                 }
 
-                using (var conn = new SqlConnection(Connection))
+                var conn = await GetConnectionAsync();
                 {
-                    await conn.OpenAsync();
+
                     using (cmd)
                     {
                         cmd.Connection = conn;
+                        cmd.Transaction = Transaction;
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
             }
             catch (Exception ex)
             {
+                Rollback();
                 throw ex;
             }
         }
@@ -398,7 +520,7 @@ namespace LSM.Generic.Repository.SqlServer
                         var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
                         if (DtMap != null)
                         {
-                            cmd.Parameters.AddWithValue(DtMap.Coluna, propert.GetValue(obj));
+                            cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
                         }
                         else
                         {
@@ -407,18 +529,20 @@ namespace LSM.Generic.Repository.SqlServer
                     }
                 }
 
-                using (var conn = new SqlConnection(Connection))
+                var conn = GetConnection();
+
+
+                using (cmd)
                 {
-                    conn.Open();
-                    using (cmd)
-                    {
-                        cmd.Connection = conn;
-                        cmd.ExecuteNonQuery();
-                    }
+                    cmd.Connection = conn;
+                    cmd.Transaction = Transaction;
+                    cmd.ExecuteNonQuery();
                 }
+
             }
             catch (Exception ex)
             {
+                Rollback();
                 throw ex;
             }
         }
@@ -446,7 +570,7 @@ namespace LSM.Generic.Repository.SqlServer
                         var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
                         if (DtMap != null)
                         {
-                            cmd.Parameters.AddWithValue(DtMap.Coluna, propert.GetValue(obj));
+                            cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
                         }
                         else
                         {
@@ -455,18 +579,19 @@ namespace LSM.Generic.Repository.SqlServer
                     }
                 }
 
-                using (var conn = new SqlConnection(Connection))
+                var conn = await GetConnectionAsync();
                 {
-                    await conn.OpenAsync();
                     using (cmd)
                     {
                         cmd.Connection = conn;
+                        cmd.Transaction = Transaction;
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
             }
             catch (Exception ex)
             {
+                Rollback();
                 throw ex;
             }
         }
@@ -484,6 +609,7 @@ namespace LSM.Generic.Repository.SqlServer
                 }
 
                 var cmd = new SqlCommand(ProcAttribute.Add);
+
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 var Properts = Type.GetProperties();
@@ -494,7 +620,7 @@ namespace LSM.Generic.Repository.SqlServer
                         var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
                         if (DtMap != null)
                         {
-                            cmd.Parameters.AddWithValue(DtMap.Coluna, propert.GetValue(obj));
+                            cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
                         }
                         else
                         {
@@ -503,18 +629,18 @@ namespace LSM.Generic.Repository.SqlServer
                     }
                 }
 
-                using (var conn = new SqlConnection(Connection))
+                var conn = GetConnection();
+
+                using (cmd)
                 {
-                    conn.Open();
-                    using (cmd)
-                    {
-                        cmd.Connection = conn;
-                        cmd.ExecuteNonQuery();
-                    }
+                    cmd.Connection = conn;
+                    cmd.Transaction = Transaction;
+                    cmd.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
             {
+                Rollback();
                 throw ex;
             }
         }
@@ -532,6 +658,7 @@ namespace LSM.Generic.Repository.SqlServer
                 }
 
                 var cmd = new SqlCommand(ProcAttribute.Add);
+
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 var Properts = Type.GetProperties();
@@ -542,7 +669,7 @@ namespace LSM.Generic.Repository.SqlServer
                         var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
                         if (DtMap != null)
                         {
-                            cmd.Parameters.AddWithValue(DtMap.Coluna, propert.GetValue(obj));
+                            cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
                         }
                         else
                         {
@@ -551,18 +678,19 @@ namespace LSM.Generic.Repository.SqlServer
                     }
                 }
 
-                using (var conn = new SqlConnection(Connection))
+                var conn = await GetConnectionAsync();
+
+                using (cmd)
                 {
-                    await conn.OpenAsync();
-                    using (cmd)
-                    {
-                        cmd.Connection = conn;
-                        await cmd.ExecuteNonQueryAsync();
-                    }
+                    cmd.Connection = conn;
+                    cmd.Transaction = Transaction;
+                    await cmd.ExecuteNonQueryAsync();
                 }
+
             }
             catch (Exception ex)
             {
+                Rollback();
                 throw ex;
             }
         }
@@ -570,6 +698,7 @@ namespace LSM.Generic.Repository.SqlServer
         public void Dispose()
         {
             Connection = "";
+            Commit();
         }
     }
 }

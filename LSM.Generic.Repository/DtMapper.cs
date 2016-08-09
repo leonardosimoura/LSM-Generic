@@ -15,8 +15,6 @@ namespace LSM.Generic.Repository
     /// </summary>
     public class DtMapper
     {
-
-
         /// <summary>
         /// Mapping a DataRow to an object
         /// </summary>
@@ -55,7 +53,7 @@ namespace LSM.Generic.Repository
                             DtMap a = (DtMap)attr;
                             if (a.Map == true)
                             {
-                                nomecoluna = a.Coluna;
+                                nomecoluna = a.Column;
                             }
                             else
                             {
@@ -168,7 +166,7 @@ namespace LSM.Generic.Repository
                             DtMap a = (DtMap)attr;
                             if (a.Map == true)
                             {
-                                nomecoluna = a.Coluna;
+                                nomecoluna = a.Column;
                             }
                             else
                             {
@@ -284,7 +282,7 @@ namespace LSM.Generic.Repository
                             DtMap a = (DtMap)attr;
                             if (a.Map == true)
                             {
-                                nomecoluna = a.Coluna;
+                                nomecoluna = a.Column;
                             }
                             else
                             {
@@ -420,7 +418,7 @@ namespace LSM.Generic.Repository
                                 DtMap a = (DtMap)attr;
                                 if (a.Map == true)
                                 {
-                                    nomecoluna = a.Coluna;
+                                    nomecoluna = a.Column;
                                 }
                                 else
                                 {
