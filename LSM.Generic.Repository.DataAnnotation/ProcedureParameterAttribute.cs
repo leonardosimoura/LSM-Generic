@@ -2,6 +2,18 @@
 
 namespace LSM.Generic.Repository.DataAnnotation
 {
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+    public class ProcedureParameterAttribute : Attribute
+    {
+        public string ProcedureName { get; private set; }
+
+        public ProcedureParameterAttribute(string procedureName)
+        {
+            ProcedureName = procedureName;
+        }
+    }
+
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class ProcedureGetByIdParameterAttribute : Attribute
     {

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace LSM.Generic.Repository.SqlServer.Tests
 {
@@ -10,8 +11,14 @@ namespace LSM.Generic.Repository.SqlServer.Tests
     {
 
         [LSM.Generic.Repository.DataAnnotation.Procedure("GetPessoaById", "GetAllPessoa", "AddPessoa", "UpdatePessoa", "RemovePessoa")]
+        [LSM.Generic.Repository.DataAnnotation.OtherProcedure("GetAllPessoaTest")]
+        [LSM.Generic.Repository.DataAnnotation.OtherProcedure("GetPessoaTestWithParameter")]
+        
+
         public class Pessoa
         {
+            
+            [LSM.Generic.Repository.DataAnnotation.ProcedureParameter("GetPessoaTestWithParameter")]
             [LSM.Generic.Repository.DataAnnotation.ProcedureGetByIdParameter]
             [LSM.Generic.Repository.DataAnnotation.ProcedureUpdateParameter]
             [LSM.Generic.Repository.DataAnnotation.ProcedureRemoveParameter]
@@ -40,6 +47,29 @@ namespace LSM.Generic.Repository.SqlServer.Tests
 
         }
         string Conexao = @"Server=DESKTOP-8SJ2DID\SQL2016; Initial Catalog=Nuget;  Persist Security Info=true; User ID=Nuget; Password=789632145@";
+
+
+
+        [TestMethod]
+        public void OtherProcedureCallAndDtMapper()
+        {
+            try
+            {
+                using (var context = new LSM.Generic.Repository.SqlServer.DbContext<Pessoa>(Conexao))
+                {
+                    IEnumerable<Pessoa> list = context.ExecuteProcedureWithListReturn(new Pessoa(), "GetAllPessoaTest");
+
+                    Pessoa obj = context.ExecuteProcedureWithObjReturn(new Pessoa() { Id = 5 }, "GetPessoaTestWithParameter");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+
+        }
 
         [TestMethod]
         public void ProcedureCallAndDtMapper()

@@ -5,15 +5,15 @@ namespace LSM.Generic.Repository.DataAnnotation
     [AttributeUsage(AttributeTargets.Class)]
     public class ProcedureAttribute : Attribute
     {
-        public string GetById { get; set; }
+        public string GetById { get; private set; }
 
-        public string GetAll { get; set; }
+        public string GetAll { get; private set; }
 
-        public string Add { get; set; }
+        public string Add { get; private set; }
 
-        public string Update { get; set; }
+        public string Update { get; private set; }
 
-        public string Remove { get; set; }
+        public string Remove { get; private set; }
 
 
         /// <summary>

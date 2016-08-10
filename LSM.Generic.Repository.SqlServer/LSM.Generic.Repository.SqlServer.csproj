@@ -34,10 +34,6 @@
       <HintPath>..\packages\LSM.Generic.Repository.1.2.2\lib\LSM.Generic.Repository.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="LSM.Generic.Repository.DataAnnotation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LSM.Generic.Repository.DataAnnotation.1.0.0\lib\LSM.Generic.Repository.DataAnnotation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,6 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LSM.Generic.Repository.DataAnnotation\LSM.Generic.Repository.DataAnnotation.csproj">
+      <Project>{3edf95b6-f2c7-4e55-b3b2-a465b462c3d9}</Project>
+      <Name>LSM.Generic.Repository.DataAnnotation</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

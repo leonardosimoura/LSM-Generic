@@ -7,6 +7,7 @@ using LSM.Generic.Repository.DataAnnotation;
 using System.Data.SqlClient;
 using System.Data;
 using System.Reflection;
+using System.Collections;
 
 namespace LSM.Generic.Repository.SqlServer
 {
@@ -48,7 +49,7 @@ namespace LSM.Generic.Repository.SqlServer
                 }
                 Conn = null;
             }
-            
+
         }
 
         private void Rollback()
@@ -294,7 +295,7 @@ namespace LSM.Generic.Repository.SqlServer
         {
             try
             {
-                
+
                 var Type = typeof(T);
                 ProcedureAttribute ProcAttribute = null;
 
@@ -347,7 +348,7 @@ namespace LSM.Generic.Repository.SqlServer
         {
             try
             {
-                
+
                 var Type = typeof(T);
                 ProcedureAttribute ProcAttribute = null;
 
@@ -399,7 +400,7 @@ namespace LSM.Generic.Repository.SqlServer
         {
             try
             {
-                
+
 
                 var Type = typeof(T);
                 ProcedureAttribute ProcAttribute = null;
@@ -450,7 +451,7 @@ namespace LSM.Generic.Repository.SqlServer
         {
             try
             {
-               
+
                 var Type = typeof(T);
                 ProcedureAttribute ProcAttribute = null;
 
@@ -687,6 +688,138 @@ namespace LSM.Generic.Repository.SqlServer
                     await cmd.ExecuteNonQueryAsync();
                 }
 
+            }
+            catch (Exception ex)
+            {
+                Rollback();
+                throw ex;
+            }
+        }
+
+
+
+        public IEnumerable<T> ExecuteProcedureWithListReturn(T obj, string procedure)
+        {
+            try
+            {
+                var Type = typeof(T);
+                OtherProcedureAttribute OtherProcAttribute = null;
+
+                foreach (var item in Type.GetCustomAttributes(typeof(OtherProcedureAttribute), false))
+                {
+                    if (((OtherProcedureAttribute)item).ProcedureName == procedure)
+                    {
+                        OtherProcAttribute = (OtherProcedureAttribute)item;
+                        break;
+                    }
+                }
+
+
+                if (OtherProcAttribute == null)
+                {
+                    throw new Exception("class dont have the procedure " + procedure + " assigned for use");
+                }
+
+                var cmd = new SqlCommand(OtherProcAttribute.ProcedureName);
+
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                var Properts = Type.GetProperties();
+                foreach (var propert in Properts)
+                {
+                    var ProcParameterAttr = (IEnumerable<ProcedureParameterAttribute>)propert.GetCustomAttributes(typeof(ProcedureParameterAttribute));
+                    if (ProcParameterAttr.FirstOrDefault( a => a.ProcedureName == procedure) != null)
+                    {
+                        
+                        var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
+                        if (DtMap != null)
+                        {
+                            cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue(propert.Name, propert.GetValue(obj));
+                        }
+                    }
+                }
+
+                var conn = GetConnection();
+
+                using (cmd)
+                {
+                    var dt = new DataTable();
+                    cmd.Connection = conn;
+                    cmd.Transaction = Transaction;
+                    dt.Load(cmd.ExecuteReader());
+
+                    return DtMapper.DataTableToList<T>(dt);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Rollback();
+                throw ex;
+            }
+        }
+
+        public T ExecuteProcedureWithObjReturn(T obj, string procedure)
+        {
+            try
+            {
+                var Type = typeof(T);
+                OtherProcedureAttribute OtherProcAttribute = null;
+
+                foreach (var item in Type.GetCustomAttributes(typeof(OtherProcedureAttribute), false))
+                {
+                    if (((OtherProcedureAttribute)item).ProcedureName == procedure)
+                    {
+                        OtherProcAttribute = (OtherProcedureAttribute)item;
+                        break;
+                    }
+                }
+
+
+                if (OtherProcAttribute == null)
+                {
+                    throw new Exception("class dont have the procedure " + procedure + " assigned for use");
+                }
+
+                var cmd = new SqlCommand(OtherProcAttribute.ProcedureName);
+
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                var Properts = Type.GetProperties();
+                foreach (var propert in Properts)
+                {
+                    var ProcParameterAttr = (IEnumerable<ProcedureParameterAttribute>)propert.GetCustomAttributes(typeof(ProcedureParameterAttribute));
+                    if (ProcParameterAttr.FirstOrDefault(a => a.ProcedureName == procedure) != null)
+                    {
+
+                        var DtMap = (LSM.Generic.Repository.Attribute.DtMap)propert.GetCustomAttributes(typeof(LSM.Generic.Repository.Attribute.DtMap)).FirstOrDefault();
+                        if (DtMap != null)
+                        {
+                            cmd.Parameters.AddWithValue(DtMap.Column, propert.GetValue(obj));
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue(propert.Name, propert.GetValue(obj));
+                        }
+                    }
+                }
+
+                var conn = GetConnection();
+
+                using (cmd)
+                {
+                    var dt = new DataTable();
+                    cmd.Connection = conn;
+                    cmd.Transaction = Transaction;
+                    dt.Load(cmd.ExecuteReader());
+
+                    return DtMapper.DataTableToObj<T>(dt);
+
+                }
             }
             catch (Exception ex)
             {
