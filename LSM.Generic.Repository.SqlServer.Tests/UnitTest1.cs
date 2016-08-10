@@ -79,7 +79,7 @@ namespace LSM.Generic.Repository.SqlServer.Tests
             catch (Exception ex)
             {
 
-                
+                throw ex;
             }
 
             
@@ -124,7 +124,7 @@ namespace LSM.Generic.Repository.SqlServer.Tests
             catch (Exception ex)
             {
 
-                
+                throw ex;
             }
 
             
@@ -169,7 +169,7 @@ namespace LSM.Generic.Repository.SqlServer.Tests
             }
             catch (Exception ex)
             {
-                
+                throw ex;
             }
             
         }
@@ -213,7 +213,7 @@ namespace LSM.Generic.Repository.SqlServer.Tests
             catch (Exception ex)
             {
 
-                
+                throw ex;
             }
             
         }
