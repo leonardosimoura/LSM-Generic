@@ -85,77 +85,78 @@ namespace LSM.Generic.Repository
                             //prop.SetValue(defaultInstance, columnvalue, null);
                             try
                             {
-                                prop.SetValue(defaultInstance, columnvalue, null);
+                                prop.SetValue(defaultInstance, Convert.ChangeType(columnvalue, prop.PropertyType), null);
+                                //prop.SetValue(defaultInstance, columnvalue, null);
                             }
                             catch (Exception)
                             {
-                                if (prop.PropertyType == typeof(bool))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(bool?))
-                                {
-                                    bool result = false;
+                                //if (prop.PropertyType == typeof(bool))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(bool?))
+                                //{
+                                //    bool result = false;
 
-                                    if (bool.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
-                                else if (prop.PropertyType == typeof(int))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(int?))
-                                {
-                                    int result = 0;
+                                //    if (bool.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
+                                //else if (prop.PropertyType == typeof(int))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(int?))
+                                //{
+                                //    int result = 0;
 
-                                    if (int.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
-                                else if (prop.PropertyType == typeof(double))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(double?))
-                                {
-                                    double result = 0;
+                                //    if (int.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
+                                //else if (prop.PropertyType == typeof(double))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(double?))
+                                //{
+                                //    double result = 0;
 
-                                    if (double.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
-                                else if (prop.PropertyType == typeof(decimal))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(decimal?))
-                                {
+                                //    if (double.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
+                                //else if (prop.PropertyType == typeof(decimal))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(decimal?))
+                                //{
 
-                                    decimal result = 0;
+                                //    decimal result = 0;
 
-                                    if (decimal.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
+                                //    if (decimal.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
 
-                                }
-                                else if (prop.PropertyType == typeof(float))
-                                {
-                                    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
-                                }
-                                else if (prop.PropertyType == typeof(float?))
-                                {
-                                    float result = 0;
+                                //}
+                                //else if (prop.PropertyType == typeof(float))
+                                //{
+                                //    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(float?))
+                                //{
+                                //    float result = 0;
 
-                                    if (float.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
+                                //    if (float.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
 
                             }
                         }
@@ -245,77 +246,79 @@ namespace LSM.Generic.Repository
                             //prop.SetValue(defaultInstance, columnvalue, null);
                             try
                             {
-                                prop.SetValue(defaultInstance, columnvalue, null);
+                                //prop.SetValue(defaultInstance, columnvalue, null);
+
+                                prop.SetValue(defaultInstance, Convert.ChangeType(columnvalue, prop.PropertyType),null);
                             }
                             catch (Exception)
                             {
-                                if (prop.PropertyType == typeof(bool))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(bool?))
-                                {
-                                    bool result = false;
+                                //if (prop.PropertyType == typeof(bool))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(bool?))
+                                //{
+                                //    bool result = false;
 
-                                    if (bool.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
-                                else if (prop.PropertyType == typeof(int))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(int?))
-                                {
-                                    int result = 0;
+                                //    if (bool.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
+                                //else if (prop.PropertyType == typeof(int))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(int?))
+                                //{
+                                //    int result = 0;
 
-                                    if (int.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
-                                else if (prop.PropertyType == typeof(double))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(double?))
-                                {
-                                    double result = 0;
+                                //    if (int.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
+                                //else if (prop.PropertyType == typeof(double))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(double?))
+                                //{
+                                //    double result = 0;
 
-                                    if (double.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
-                                else if (prop.PropertyType == typeof(decimal))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(decimal?))
-                                {
+                                //    if (double.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
+                                //else if (prop.PropertyType == typeof(decimal))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(decimal?))
+                                //{
 
-                                    decimal result = 0;
+                                //    decimal result = 0;
 
-                                    if (decimal.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
+                                //    if (decimal.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
 
-                                }
-                                else if (prop.PropertyType == typeof(float))
-                                {
-                                    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
-                                }
-                                else if (prop.PropertyType == typeof(float?))
-                                {
-                                    float result = 0;
+                                //}
+                                //else if (prop.PropertyType == typeof(float))
+                                //{
+                                //    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(float?))
+                                //{
+                                //    float result = 0;
 
-                                    if (float.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
+                                //    if (float.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
 
                             }
                         }
@@ -407,77 +410,78 @@ namespace LSM.Generic.Repository
                             //prop.SetValue(defaultInstance, columnvalue, null);
                             try
                             {
-                                prop.SetValue(defaultInstance, columnvalue, null);
+                                //prop.SetValue(defaultInstance, columnvalue, null);
+                                prop.SetValue(defaultInstance, Convert.ChangeType(columnvalue, prop.PropertyType), null);
                             }
                             catch (Exception)
                             {
-                                if (prop.PropertyType == typeof(bool))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(bool?))
-                                {
-                                    bool result = false;
+                                //if (prop.PropertyType == typeof(bool))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(bool?))
+                                //{
+                                //    bool result = false;
 
-                                    if (bool.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
-                                else if (prop.PropertyType == typeof(int))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(int?))
-                                {
-                                    int result = 0;
+                                //    if (bool.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
+                                //else if (prop.PropertyType == typeof(int))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(int?))
+                                //{
+                                //    int result = 0;
 
-                                    if (int.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
-                                else if (prop.PropertyType == typeof(double))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(double?))
-                                {
-                                    double result = 0;
+                                //    if (int.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
+                                //else if (prop.PropertyType == typeof(double))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(double?))
+                                //{
+                                //    double result = 0;
 
-                                    if (double.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
-                                else if (prop.PropertyType == typeof(decimal))
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
-                                }
-                                else if (prop.PropertyType == typeof(decimal?))
-                                {
+                                //    if (double.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
+                                //else if (prop.PropertyType == typeof(decimal))
+                                //{
+                                //    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(decimal?))
+                                //{
 
-                                    decimal result = 0;
+                                //    decimal result = 0;
 
-                                    if (decimal.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
+                                //    if (decimal.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
 
-                                }
-                                else if (prop.PropertyType == typeof(float))
-                                {
-                                    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
-                                }
-                                else if (prop.PropertyType == typeof(float?))
-                                {
-                                    float result = 0;
+                                //}
+                                //else if (prop.PropertyType == typeof(float))
+                                //{
+                                //    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
+                                //}
+                                //else if (prop.PropertyType == typeof(float?))
+                                //{
+                                //    float result = 0;
 
-                                    if (float.TryParse(columnvalue.ToString(), out result))
-                                        prop.SetValue(defaultInstance, result, null);
-                                    else
-                                        prop.SetValue(defaultInstance, null, null);
-                                }
+                                //    if (float.TryParse(columnvalue.ToString(), out result))
+                                //        prop.SetValue(defaultInstance, result, null);
+                                //    else
+                                //        prop.SetValue(defaultInstance, null, null);
+                                //}
                             }
                         }
                     }
@@ -590,78 +594,79 @@ namespace LSM.Generic.Repository
                                 //prop.SetValue(defaultInstance, columnvalue, null);
                                 try
                                 {
-                                    prop.SetValue(defaultInstance, columnvalue, null);
+                                    prop.SetValue(defaultInstance, Convert.ChangeType(columnvalue, prop.PropertyType), null);
+                                    //prop.SetValue(defaultInstance, columnvalue, null);
                                 }
                                 catch (Exception)
                                 {
 
-                                    if (prop.PropertyType == typeof(bool))
-                                    {
-                                        prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
-                                    }
-                                    else if (prop.PropertyType == typeof(bool?))
-                                    {
-                                        bool result = false;
+                                    //if (prop.PropertyType == typeof(bool))
+                                    //{
+                                    //    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
+                                    //}
+                                    //else if (prop.PropertyType == typeof(bool?))
+                                    //{
+                                    //    bool result = false;
 
-                                        if (bool.TryParse(columnvalue.ToString(), out result))
-                                            prop.SetValue(defaultInstance, result, null);
-                                        else
-                                            prop.SetValue(defaultInstance, null, null);
-                                    }
-                                    else if (prop.PropertyType == typeof(int))
-                                    {
-                                        prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
-                                    }
-                                    else if (prop.PropertyType == typeof(int?))
-                                    {
-                                        int result = 0;
+                                    //    if (bool.TryParse(columnvalue.ToString(), out result))
+                                    //        prop.SetValue(defaultInstance, result, null);
+                                    //    else
+                                    //        prop.SetValue(defaultInstance, null, null);
+                                    //}
+                                    //else if (prop.PropertyType == typeof(int))
+                                    //{
+                                    //    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
+                                    //}
+                                    //else if (prop.PropertyType == typeof(int?))
+                                    //{
+                                    //    int result = 0;
 
-                                        if (int.TryParse(columnvalue.ToString(), out result))
-                                            prop.SetValue(defaultInstance, result, null);
-                                        else
-                                            prop.SetValue(defaultInstance, null, null);
-                                    }
-                                    else if (prop.PropertyType == typeof(double))
-                                    {
-                                        prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
-                                    }
-                                    else if (prop.PropertyType == typeof(double?))
-                                    {
-                                        double result = 0;
+                                    //    if (int.TryParse(columnvalue.ToString(), out result))
+                                    //        prop.SetValue(defaultInstance, result, null);
+                                    //    else
+                                    //        prop.SetValue(defaultInstance, null, null);
+                                    //}
+                                    //else if (prop.PropertyType == typeof(double))
+                                    //{
+                                    //    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
+                                    //}
+                                    //else if (prop.PropertyType == typeof(double?))
+                                    //{
+                                    //    double result = 0;
 
-                                        if (double.TryParse(columnvalue.ToString(), out result))
-                                            prop.SetValue(defaultInstance, result, null);
-                                        else
-                                            prop.SetValue(defaultInstance, null, null);
-                                    }
-                                    else if (prop.PropertyType == typeof(decimal))
-                                    {
-                                        prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
-                                    }
-                                    else if (prop.PropertyType == typeof(decimal?))
-                                    {
+                                    //    if (double.TryParse(columnvalue.ToString(), out result))
+                                    //        prop.SetValue(defaultInstance, result, null);
+                                    //    else
+                                    //        prop.SetValue(defaultInstance, null, null);
+                                    //}
+                                    //else if (prop.PropertyType == typeof(decimal))
+                                    //{
+                                    //    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
+                                    //}
+                                    //else if (prop.PropertyType == typeof(decimal?))
+                                    //{
 
-                                        decimal result = 0;
+                                    //    decimal result = 0;
 
-                                        if (decimal.TryParse(columnvalue.ToString(), out result))
-                                            prop.SetValue(defaultInstance, result, null);
-                                        else
-                                            prop.SetValue(defaultInstance, null, null);
+                                    //    if (decimal.TryParse(columnvalue.ToString(), out result))
+                                    //        prop.SetValue(defaultInstance, result, null);
+                                    //    else
+                                    //        prop.SetValue(defaultInstance, null, null);
 
-                                    }
-                                    else if (prop.PropertyType == typeof(float))
-                                    {
-                                        prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
-                                    }
-                                    else if (prop.PropertyType == typeof(float?))
-                                    {
-                                        float result = 0;
+                                    //}
+                                    //else if (prop.PropertyType == typeof(float))
+                                    //{
+                                    //    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
+                                    //}
+                                    //else if (prop.PropertyType == typeof(float?))
+                                    //{
+                                    //    float result = 0;
 
-                                        if (float.TryParse(columnvalue.ToString(), out result))
-                                             prop.SetValue(defaultInstance, result, null);
-                                        else
-                                             prop.SetValue(defaultInstance, null, null);
-                                    }
+                                    //    if (float.TryParse(columnvalue.ToString(), out result))
+                                    //         prop.SetValue(defaultInstance, result, null);
+                                    //    else
+                                    //         prop.SetValue(defaultInstance, null, null);
+                                    //}
 
                                 }
                             }
