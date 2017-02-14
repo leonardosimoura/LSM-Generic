@@ -240,87 +240,9 @@ namespace LSM.Generic.Repository
                         //If not, it will be added to the instance
                         if (columnvalue != DBNull.Value)
                         {
-                            //Set the value dinamically. Now you need to pass as an argument
-                            //an instance class of the generic class. This instance has been
-                            //created with Activator.CreateInstance(t)
-                            //prop.SetValue(defaultInstance, columnvalue, null);
-                            try
-                            {
-                                //prop.SetValue(defaultInstance, columnvalue, null);
 
-                                prop.SetValue(defaultInstance, Convert.ChangeType(columnvalue, prop.PropertyType),null);
-                            }
-                            catch (Exception)
-                            {
-                                //if (prop.PropertyType == typeof(bool))
-                                //{
-                                //    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
-                                //}
-                                //else if (prop.PropertyType == typeof(bool?))
-                                //{
-                                //    bool result = false;
+                            SetaValorProp(defaultInstance, prop, columnvalue);
 
-                                //    if (bool.TryParse(columnvalue.ToString(), out result))
-                                //        prop.SetValue(defaultInstance, result, null);
-                                //    else
-                                //        prop.SetValue(defaultInstance, null, null);
-                                //}
-                                //else if (prop.PropertyType == typeof(int))
-                                //{
-                                //    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
-                                //}
-                                //else if (prop.PropertyType == typeof(int?))
-                                //{
-                                //    int result = 0;
-
-                                //    if (int.TryParse(columnvalue.ToString(), out result))
-                                //        prop.SetValue(defaultInstance, result, null);
-                                //    else
-                                //        prop.SetValue(defaultInstance, null, null);
-                                //}
-                                //else if (prop.PropertyType == typeof(double))
-                                //{
-                                //    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
-                                //}
-                                //else if (prop.PropertyType == typeof(double?))
-                                //{
-                                //    double result = 0;
-
-                                //    if (double.TryParse(columnvalue.ToString(), out result))
-                                //        prop.SetValue(defaultInstance, result, null);
-                                //    else
-                                //        prop.SetValue(defaultInstance, null, null);
-                                //}
-                                //else if (prop.PropertyType == typeof(decimal))
-                                //{
-                                //    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
-                                //}
-                                //else if (prop.PropertyType == typeof(decimal?))
-                                //{
-
-                                //    decimal result = 0;
-
-                                //    if (decimal.TryParse(columnvalue.ToString(), out result))
-                                //        prop.SetValue(defaultInstance, result, null);
-                                //    else
-                                //        prop.SetValue(defaultInstance, null, null);
-
-                                //}
-                                //else if (prop.PropertyType == typeof(float))
-                                //{
-                                //    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
-                                //}
-                                //else if (prop.PropertyType == typeof(float?))
-                                //{
-                                //    float result = 0;
-
-                                //    if (float.TryParse(columnvalue.ToString(), out result))
-                                //        prop.SetValue(defaultInstance, result, null);
-                                //    else
-                                //        prop.SetValue(defaultInstance, null, null);
-                                //}
-
-                            }
                         }
                     }
                 }
@@ -404,85 +326,9 @@ namespace LSM.Generic.Repository
                         //If not, it will be added to the instance
                         if (columnvalue != DBNull.Value)
                         {
-                            //Set the value dinamically. Now you need to pass as an argument
-                            //an instance class of the generic class. This instance has been
-                            //created with Activator.CreateInstance(t)
-                            //prop.SetValue(defaultInstance, columnvalue, null);
-                            try
-                            {
-                                //prop.SetValue(defaultInstance, columnvalue, null);
-                                prop.SetValue(defaultInstance, Convert.ChangeType(columnvalue, prop.PropertyType), null);
-                            }
-                            catch (Exception)
-                            {
-                                //if (prop.PropertyType == typeof(bool))
-                                //{
-                                //    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
-                                //}
-                                //else if (prop.PropertyType == typeof(bool?))
-                                //{
-                                //    bool result = false;
 
-                                //    if (bool.TryParse(columnvalue.ToString(), out result))
-                                //        prop.SetValue(defaultInstance, result, null);
-                                //    else
-                                //        prop.SetValue(defaultInstance, null, null);
-                                //}
-                                //else if (prop.PropertyType == typeof(int))
-                                //{
-                                //    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
-                                //}
-                                //else if (prop.PropertyType == typeof(int?))
-                                //{
-                                //    int result = 0;
+                            SetaValorProp(defaultInstance, prop, columnvalue);
 
-                                //    if (int.TryParse(columnvalue.ToString(), out result))
-                                //        prop.SetValue(defaultInstance, result, null);
-                                //    else
-                                //        prop.SetValue(defaultInstance, null, null);
-                                //}
-                                //else if (prop.PropertyType == typeof(double))
-                                //{
-                                //    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
-                                //}
-                                //else if (prop.PropertyType == typeof(double?))
-                                //{
-                                //    double result = 0;
-
-                                //    if (double.TryParse(columnvalue.ToString(), out result))
-                                //        prop.SetValue(defaultInstance, result, null);
-                                //    else
-                                //        prop.SetValue(defaultInstance, null, null);
-                                //}
-                                //else if (prop.PropertyType == typeof(decimal))
-                                //{
-                                //    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
-                                //}
-                                //else if (prop.PropertyType == typeof(decimal?))
-                                //{
-
-                                //    decimal result = 0;
-
-                                //    if (decimal.TryParse(columnvalue.ToString(), out result))
-                                //        prop.SetValue(defaultInstance, result, null);
-                                //    else
-                                //        prop.SetValue(defaultInstance, null, null);
-
-                                //}
-                                //else if (prop.PropertyType == typeof(float))
-                                //{
-                                //    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
-                                //}
-                                //else if (prop.PropertyType == typeof(float?))
-                                //{
-                                //    float result = 0;
-
-                                //    if (float.TryParse(columnvalue.ToString(), out result))
-                                //        prop.SetValue(defaultInstance, result, null);
-                                //    else
-                                //        prop.SetValue(defaultInstance, null, null);
-                                //}
-                            }
                         }
                     }
 
@@ -523,6 +369,86 @@ namespace LSM.Generic.Repository
         }
 
   
+        private static void SetaValorProp(object defaultInstance,PropertyInfo prop , object columnvalue)
+        {
+            try
+            {
+                prop.SetValue(defaultInstance, columnvalue, null);
+            }
+            catch (Exception)
+            {
+
+                if (prop.PropertyType == typeof(bool))
+                {
+                    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
+                }
+                else if (prop.PropertyType == typeof(bool?))
+                {
+                    bool result = false;
+
+                    if (bool.TryParse(columnvalue.ToString(), out result))
+                        prop.SetValue(defaultInstance, result, null);
+                    else
+                        prop.SetValue(defaultInstance, null, null);
+                }
+                else if (prop.PropertyType == typeof(int))
+                {
+                    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
+                }
+                else if (prop.PropertyType == typeof(int?))
+                {
+                    int result = 0;
+
+                    if (int.TryParse(columnvalue.ToString(), out result))
+                        prop.SetValue(defaultInstance, result, null);
+                    else
+                        prop.SetValue(defaultInstance, null, null);
+                }
+                else if (prop.PropertyType == typeof(double))
+                {
+                    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
+                }
+                else if (prop.PropertyType == typeof(double?))
+                {
+                    double result = 0;
+
+                    if (double.TryParse(columnvalue.ToString(), out result))
+                        prop.SetValue(defaultInstance, result, null);
+                    else
+                        prop.SetValue(defaultInstance, null, null);
+                }
+                else if (prop.PropertyType == typeof(decimal))
+                {
+                    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
+                }
+                else if (prop.PropertyType == typeof(decimal?))
+                {
+
+                    decimal result = 0;
+
+                    if (decimal.TryParse(columnvalue.ToString(), out result))
+                        prop.SetValue(defaultInstance, result, null);
+                    else
+                        prop.SetValue(defaultInstance, null, null);
+
+                }
+                else if (prop.PropertyType == typeof(float))
+                {
+                    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
+                }
+                else if (prop.PropertyType == typeof(float?))
+                {
+                    float result = 0;
+
+                    if (float.TryParse(columnvalue.ToString(), out result))
+                        prop.SetValue(defaultInstance, result, null);
+                    else
+                        prop.SetValue(defaultInstance, null, null);
+                }
+
+            }
+        }
+
         private static List<T> PrivateDataTableToList<T>(DataTable dataTable, bool Nullable = false) where T : class
         {
             if (dataTable.Rows.Count == 0 && Nullable == true)
@@ -588,87 +514,9 @@ namespace LSM.Generic.Repository
                             //If not, it will be added to the instance
                             if (columnvalue != DBNull.Value)
                             {
-                                //Set the value dinamically. Now you need to pass as an argument
-                                //an instance class of the generic class. This instance has been
-                                //created with Activator.CreateInstance(t)
-                                //prop.SetValue(defaultInstance, columnvalue, null);
-                                try
-                                {
-                                    prop.SetValue(defaultInstance, Convert.ChangeType(columnvalue, prop.PropertyType), null);
-                                    //prop.SetValue(defaultInstance, columnvalue, null);
-                                }
-                                catch (Exception)
-                                {
-
-                                    //if (prop.PropertyType == typeof(bool))
-                                    //{
-                                    //    prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
-                                    //}
-                                    //else if (prop.PropertyType == typeof(bool?))
-                                    //{
-                                    //    bool result = false;
-
-                                    //    if (bool.TryParse(columnvalue.ToString(), out result))
-                                    //        prop.SetValue(defaultInstance, result, null);
-                                    //    else
-                                    //        prop.SetValue(defaultInstance, null, null);
-                                    //}
-                                    //else if (prop.PropertyType == typeof(int))
-                                    //{
-                                    //    prop.SetValue(defaultInstance, Convert.ToInt32(columnvalue), null);
-                                    //}
-                                    //else if (prop.PropertyType == typeof(int?))
-                                    //{
-                                    //    int result = 0;
-
-                                    //    if (int.TryParse(columnvalue.ToString(), out result))
-                                    //        prop.SetValue(defaultInstance, result, null);
-                                    //    else
-                                    //        prop.SetValue(defaultInstance, null, null);
-                                    //}
-                                    //else if (prop.PropertyType == typeof(double))
-                                    //{
-                                    //    prop.SetValue(defaultInstance, Convert.ToDouble(columnvalue), null);
-                                    //}
-                                    //else if (prop.PropertyType == typeof(double?))
-                                    //{
-                                    //    double result = 0;
-
-                                    //    if (double.TryParse(columnvalue.ToString(), out result))
-                                    //        prop.SetValue(defaultInstance, result, null);
-                                    //    else
-                                    //        prop.SetValue(defaultInstance, null, null);
-                                    //}
-                                    //else if (prop.PropertyType == typeof(decimal))
-                                    //{
-                                    //    prop.SetValue(defaultInstance, Convert.ToDecimal(columnvalue), null);
-                                    //}
-                                    //else if (prop.PropertyType == typeof(decimal?))
-                                    //{
-
-                                    //    decimal result = 0;
-
-                                    //    if (decimal.TryParse(columnvalue.ToString(), out result))
-                                    //        prop.SetValue(defaultInstance, result, null);
-                                    //    else
-                                    //        prop.SetValue(defaultInstance, null, null);
-
-                                    //}
-                                    //else if (prop.PropertyType == typeof(float))
-                                    //{
-                                    //    prop.SetValue(defaultInstance, float.Parse(columnvalue.ToString()), null);
-                                    //}
-                                    //else if (prop.PropertyType == typeof(float?))
-                                    //{
-                                    //    float result = 0;
-
-                                    //    if (float.TryParse(columnvalue.ToString(), out result))
-                                    //         prop.SetValue(defaultInstance, result, null);
-                                    //    else
-                                    //         prop.SetValue(defaultInstance, null, null);
-                                    //}
-
-                                }
+                                
+                               SetaValorProp(defaultInstance, prop, columnvalue);
+                                
                             }
                         }
                     }
