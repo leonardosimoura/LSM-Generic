@@ -352,9 +352,9 @@ namespace LSM.Generic.Repository
         /// <typeparam name="T">Type/Class of return</typeparam>
         /// <param name="DataTable">DataTable to be mapped</param>
         /// <returns></returns>
-        public static List<T> DataTableToList<T>(DataTable DataTable) where T : class
+        public static List<T> DataTableToList<T>(DataTable dataTable,Action<T> additionalAction = null) where T : class
         {
-            return PrivateDataTableToList<T>(DataTable, false);
+            return PrivateDataTableToList<T>(dataTable, false,additionalAction);
         }
 
         /// <summary>
@@ -363,12 +363,11 @@ namespace LSM.Generic.Repository
         /// <typeparam name="T">Type/Class of return</typeparam>
         /// <param name="DataTable">DataTable to be mapped</param>
         /// <returns></returns>
-        public static List<T> DataTableToNullableList<T>(DataTable DataTable) where T : class
+        public static List<T> DataTableToNullableList<T>(DataTable dataTable,Action<T> additionalAction = null) where T : class
         {
-            return PrivateDataTableToList<T>(DataTable, true);
+            return PrivateDataTableToList<T>(dataTable, true,additionalAction);
         }
-
-  
+                
         private static void SetaValorProp(object defaultInstance,PropertyInfo prop , object columnvalue)
         {
             try
@@ -377,7 +376,6 @@ namespace LSM.Generic.Repository
             }
             catch (Exception)
             {
-
                 if (prop.PropertyType == typeof(bool))
                 {
                     prop.SetValue(defaultInstance, Convert.ToBoolean(columnvalue), null);
@@ -448,17 +446,17 @@ namespace LSM.Generic.Repository
 
             }
         }
-
-        private static List<T> PrivateDataTableToList<T>(DataTable dataTable, bool Nullable = false) where T : class
+        
+        private static List<T> PrivateDataTableToList<T>(DataTable dataTable, bool nullable = false, Action<T> additionalAction = null) where T : class
         {
-            if (dataTable.Rows.Count == 0 && Nullable == true)
+            if (dataTable.Rows.Count == 0 && nullable == true)
             {
                 return null;
             }
             //This create a new list with the same type of the generic class
             List<T> genericList = new List<T>();
 
-            if (dataTable.Rows.Count == 0 && Nullable == false)
+            if (dataTable.Rows.Count == 0 && nullable == false)
             {
                 return genericList;
             }
@@ -529,6 +527,9 @@ namespace LSM.Generic.Repository
                 //Now, create a class of the same type of the generic class. 
                 //Then a conversion itïs done to set the value
                 T myclass = (T)defaultInstance;
+
+                if (additionalAction != null)	            
+                    additionalAction.Invoke(myclass);	            
                 //Add the generic instance to the generic list
                 genericList.Add(myclass);
             }

@@ -13,6 +13,8 @@ namespace LSM.Generic.Repository.Tests
             public decimal Dec1 { get; set; }
 
             public decimal? Dec2 { get; set; }
+
+            public decimal Total { get; set; }
         }
 
         [TestMethod]
@@ -35,8 +37,8 @@ namespace LSM.Generic.Repository.Tests
             row["Dec2"] = null;
 
             dt.Rows.Add(row);
-
-            var lista = DtMapper.DataTableToList<Teste>(dt);
+            Action<Teste> somar = (Teste model) => model.Total = model.Dec1 * 2;
+            var lista = DtMapper.DataTableToList<Teste>(dt,somar);
 
             var a = "";
 
